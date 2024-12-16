@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import Combine
+import SwiftUIExtras
 
 class QRCodeReaderViewModel: NSObject, ObservableObject {
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import SwiftUIExtras
 
 public struct QRCodeReader: View {
     

@@ -9,14 +9,18 @@ let package = Package(
     products: [
         .library(
             name: "QRCodeReader",
-            targets: ["QRCodeReader"]),
+            targets: ["QRCodeReader"]
+        ),
     ],
     dependencies: [
+        .package(url: "https://github.com/ribtiago/SwiftUIExtras.git", from: "1.0.0")
     ],
     targets: [
         .target(
             name: "QRCodeReader",
             dependencies: [
-            ])
+                .product(name: "SwiftUIExtras", package: "SwiftUIExtras")
+            ]
+        )
     ]
 )

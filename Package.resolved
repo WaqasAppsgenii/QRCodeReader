@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftuiextras",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ribtiago/SwiftUIExtras.git",
+      "state" : {
+        "revision" : "b40c865b2756a0c07145e065f078d5a4c591d08f",
+        "version" : "1.9.3"
+      }
+    }
+  ],
+  "version" : 2
+}

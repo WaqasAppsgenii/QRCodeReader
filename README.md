@@ -23,7 +23,7 @@ To add `QRCodeReader` to your project:
 
 1. Open your project in Xcode.
 2. Go to **File > Swift Packages > Add Package Dependency**.
-3. Enter the repository URL: `https://github.com/yourusername/QRCodeReader.git`
+3. Enter the repository URL: `https://github.com/AmirDaliri/QRCodeReader.git`
 4. Choose the latest version or a specific version as needed.
 
 ## Usage

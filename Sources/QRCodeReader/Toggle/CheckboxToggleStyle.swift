@@ -2,7 +2,7 @@
 //  CheckboxToggleStyle.swift
 //  QRCodeReader
 //
-//  Created by Amir Daliri on 19/05/2022.
+//  Created by Tiago Ribeiro on 19/05/2022.
 //
 
 import SwiftUI

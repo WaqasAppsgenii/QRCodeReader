@@ -7,7 +7,6 @@ A Swift Package for reading QR codes in iOS applications. `QRCodeReader` leverag
 - Real-time QR code scanning using the camera.
 - Torch control for scanning in low-light conditions.
 - Image picker for selecting QR codes from the photo library.
-- Customizable toggle styles (`CheckboxToggleStyle` and `OverlayToggleStyle`) for UI elements.
 - SwiftUI and UIKit interoperability.
 
 ## Requirements

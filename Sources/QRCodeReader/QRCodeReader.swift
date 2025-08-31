@@ -26,26 +26,32 @@ public struct QRCodeReader: View {
         ZStack(alignment: .bottomLeading) {
             self.viewModel.cameraPreview
                 .ignoresSafeArea()
-            
-            if self.viewModel.isTorchEnable {
-                Toggle(isOn: self.$viewModel.isTorchOn) {
-                    Image(systemName: self.viewModel.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
-                        .frame(width: 20, height: 20)
+            VStack {
+                Spacer()
+                HStack {
+                    if self.viewModel.isTorchEnable {
+                        Toggle(isOn: self.$viewModel.isTorchOn) {
+                            Image(systemName: self.viewModel.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
+                                .frame(width: 20, height: 20)
+                        }
+                        .toggleStyle(.overlay)
+                        .padding()
+                    }
+                    Spacer()
+                    Button(action: {
+                        self.selectedImage = nil
+                        self.isImagePickerPresented = true
+                    }) {
+                        Image(systemName: "photo.on.rectangle")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding(8)
+                    }
+                    .padding()
                 }
-                .toggleStyle(.overlay)
-                .padding(30)
+                .padding(.bottom)
             }
             
-            Button(action: {
-                self.selectedImage = nil
-                self.isImagePickerPresented = true
-            }) {
-                Image(systemName: "photo.on.rectangle")
-                       .font(.title)
-                       .foregroundColor(.white)
-                       .padding(8)
-            }
-            .padding()
         }
         .onReceive(self.viewModel.result) {
             self.receivedResult($0)

@@ -29,15 +29,7 @@ public struct QRCodeReader: View {
             VStack {
                 Spacer()
                 HStack {
-                    if self.viewModel.isTorchEnable {
-                        Toggle(isOn: self.$viewModel.isTorchOn) {
-                            Image(systemName: self.viewModel.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
-                                .frame(width: 20, height: 20)
-                        }
-                        .toggleStyle(.overlay)
-                        .padding()
-                    }
-                    Spacer()
+                   
                     Button(action: {
                         self.selectedImage = nil
                         self.isImagePickerPresented = true
@@ -48,6 +40,17 @@ public struct QRCodeReader: View {
                             .padding(8)
                     }
                     .padding()
+                    
+                    Spacer()
+                    
+                    if self.viewModel.isTorchEnable {
+                        Toggle(isOn: self.$viewModel.isTorchOn) {
+                            Image(systemName: self.viewModel.isTorchOn ? "flashlight.on.fill" : "flashlight.off.fill")
+                                .frame(width: 20, height: 20)
+                        }
+                        .toggleStyle(.overlay)
+                        .padding()
+                    }
                 }
                 .padding(.bottom)
             }

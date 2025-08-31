@@ -40,11 +40,10 @@ public struct QRCodeReader: View {
                 self.selectedImage = nil
                 self.isImagePickerPresented = true
             }) {
-                Text("Select QR Code from Gallery")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                Image(systemName: "photo.on.rectangle")
+                       .font(.title)
+                       .foregroundColor(.white)
+                       .padding(8)
             }
             .padding()
         }

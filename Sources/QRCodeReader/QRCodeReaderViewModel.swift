@@ -50,15 +50,18 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
     
     func startCapturing() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-               self?.captureSession.startRunning()
-           }
-        
+                guard let self else { return }
+                guard !self.captureSession.isRunning else { return }
+                self.captureSession.startRunning()
+            }
     }
     
     func stopCapturing() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                self?.captureSession.stopRunning()
-            }
+               guard let self else { return }
+               guard self.captureSession.isRunning else { return }
+               self.captureSession.stopRunning()
+           }
     }
     
     func scanQRCodeFromImage(image: UIImage) {

@@ -88,8 +88,9 @@ public struct QRCodeReader: View {
 
 #if DEBUG
 struct QRCodeReader_Previews: PreviewProvider {
+    @State static var isScanning = true
     static var previews: some View {
-        QRCodeReader { _ in
+        QRCodeReader(isScanning: $isScanning) { _ in
             
         }
     }

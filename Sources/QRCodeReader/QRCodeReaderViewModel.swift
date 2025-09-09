@@ -46,14 +46,6 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
                 self.toggleTorch(isOn)
             }
             .store(in: &self.cancellables)
-        
-        NotificationCenter.default.addObserver(
-                forName: Notification.Name("StopQRCodeScanning"),
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                self?.stopCapturingNew()
-            }
     }
     
     func startCapturing() {
@@ -67,12 +59,6 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 self?.captureSession.stopRunning()
             }
-    }
-    
-    func stopCapturingNew() {
-        if captureSession.isRunning {
-            captureSession.stopRunning()
-        }
     }
     
     func scanQRCodeFromImage(image: UIImage) {
@@ -102,9 +88,13 @@ extension QRCodeReaderViewModel: AVCaptureMetadataOutputObjectsDelegate {
             self.result.send(stringValue)
             
             // Restart capture session after a short delay to allow continuous scanning
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.captureSession.startRunning()
-            }
+//            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1.0) { [weak self] in
+//                self?.captureSession.startRunning()
+//            }
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                       self?.captureSession.stopRunning()
+                   }
         }
     }
 }

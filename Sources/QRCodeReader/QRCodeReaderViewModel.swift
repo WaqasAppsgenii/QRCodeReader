@@ -46,6 +46,14 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
                 self.toggleTorch(isOn)
             }
             .store(in: &self.cancellables)
+        
+        NotificationCenter.default.addObserver(
+                forName: Notification.Name("StopQRCodeScanning"),
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                self?.stopCapturingNew()
+            }
     }
     
     func startCapturing() {
@@ -58,6 +66,12 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
     
     func stopCapturing() {
         self.captureSession.stopRunning()
+    }
+    
+    func stopCapturingNew() {
+        if captureSession.isRunning {
+            captureSession.stopRunning()
+        }
     }
     
     func scanQRCodeFromImage(image: UIImage) {

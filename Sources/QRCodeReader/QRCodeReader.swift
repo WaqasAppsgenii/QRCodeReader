@@ -12,13 +12,16 @@ import SwiftUIExtras
 public struct QRCodeReader: View {
     
     @StateObject private var viewModel: QRCodeReaderViewModel
+    @Binding private var isScanning: Bool
     @State private var isImagePickerPresented = false
     @State private var selectedImage: UIImage? = nil
     
     private var receivedResult: (String) -> Void
     
-    public init(readerTypes: [AVMetadataObject.ObjectType] = [.qr, .pdf417, .aztec], receivedResult: @escaping (String) -> Void) {
+    public init(readerTypes: [AVMetadataObject.ObjectType] = [.qr, .pdf417, .aztec],
+    isScanning: Binding<Bool>, receivedResult: @escaping (String) -> Void) {
         self._viewModel = StateObject(wrappedValue: QRCodeReaderViewModel(readerObjectTypes: readerTypes))
+        self._isScanning = isScanning
         self.receivedResult = receivedResult
     }
     
@@ -56,6 +59,13 @@ public struct QRCodeReader: View {
             }
             
         }
+        .onChange(of: isScanning) { newValue in
+                    if newValue {
+                        viewModel.startCapturing()
+                    } else {
+                        viewModel.stopCapturing()
+                    }
+                }
         .onReceive(self.viewModel.result) {
             self.receivedResult($0)
         }

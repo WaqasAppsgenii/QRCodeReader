@@ -57,15 +57,16 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
     }
     
     func startCapturing() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            self.captureSession.startRunning()
-        }
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+               self?.captureSession.startRunning()
+           }
         
     }
     
     func stopCapturing() {
-        self.captureSession.stopRunning()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                self?.captureSession.stopRunning()
+            }
     }
     
     func stopCapturingNew() {

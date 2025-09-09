@@ -64,6 +64,23 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
            }
     }
     
+    func restartCapturing() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            
+            // Fully stop and start again
+            if self.captureSession.isRunning {
+                self.captureSession.stopRunning()
+            }
+            self.captureSession.startRunning()
+            
+            // Re-assign delegate (sometimes it gets lost after stop)
+            if let output = self.captureSession.outputs.first as? AVCaptureMetadataOutput {
+                output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+            }
+        }
+    }
+    
     func scanQRCodeFromImage(image: UIImage) {
         guard let ciImage = CIImage(image: image) else { return }
         

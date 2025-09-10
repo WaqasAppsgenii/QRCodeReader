@@ -112,9 +112,9 @@ extension QRCodeReaderViewModel: AVCaptureMetadataOutputObjectsDelegate {
 //                self?.captureSession.startRunning()
 //            }
             
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                       self?.captureSession.stopRunning()
-                   }
+//            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//                       self?.captureSession.stopRunning()
+//                   }
         }
     }
 }

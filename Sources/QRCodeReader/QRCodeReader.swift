@@ -85,8 +85,8 @@ public struct QRCodeReader: View {
                     }
                 }
         }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("resumeScanner"))) { _ in
-            viewModel.resumeScanning(after: 5)
+        .onReceive(NotificationCenter.default.publisher(for: .resumeScanner)) { _ in
+            viewModel.resumeScanning(after: 2.5)
         }
     }
 }

@@ -159,3 +159,8 @@ fileprivate extension QRCodeReaderViewModel {
         input.device.unlockForConfiguration()
     }
 }
+
+
+extension Notification.Name {
+    public static let resumeScanner = Notification.Name("resumeScanner")
+}

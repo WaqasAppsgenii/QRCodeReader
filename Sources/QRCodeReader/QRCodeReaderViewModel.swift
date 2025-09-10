@@ -93,6 +93,10 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
             }
         }
     
+    func resetScanning() {
+        isProcessingScan = false
+    }
+    
     func scanQRCodeFromImage(image: UIImage) {
         guard let ciImage = CIImage(image: image) else { return }
         

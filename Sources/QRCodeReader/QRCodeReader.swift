@@ -71,6 +71,7 @@ public struct QRCodeReader: View {
         }
         .onAppear {
             //self.viewModel.startCapturing()
+            self.viewModel.resetScanning()
             self.viewModel.restartCapturing()
         }
         .onDisappear {

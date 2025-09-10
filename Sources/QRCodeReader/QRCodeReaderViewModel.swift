@@ -21,6 +21,8 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
     lazy var cameraPreview = CameraPreview(session: self.captureSession)
     var result = PassthroughSubject<String, Never>()
     
+    private var isProcessingScan = false
+    
     init(readerObjectTypes: [AVMetadataObject.ObjectType]) {
         super.init()
         
@@ -81,6 +83,16 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
         }
     }
     
+    func resumeScanning(after delay: TimeInterval = 0) {
+            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + delay) { [weak self] in
+                guard let self else { return }
+                self.isProcessingScan = false
+                if !self.captureSession.isRunning {
+                    self.captureSession.startRunning()
+                }
+            }
+        }
+    
     func scanQRCodeFromImage(image: UIImage) {
         guard let ciImage = CIImage(image: image) else { return }
         
@@ -100,12 +112,20 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
 extension QRCodeReaderViewModel: AVCaptureMetadataOutputObjectsDelegate {
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        
+        guard !isProcessingScan else { return }   // 🚀 ignore duplicates
+               isProcessingScan = true
+        
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             
             self.result.send(stringValue)
+            
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                           self?.captureSession.stopRunning()
+                       }
             
             // Restart capture session after a short delay to allow continuous scanning
 //            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1.0) { [weak self] in

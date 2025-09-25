@@ -12,6 +12,9 @@ import SwiftUIExtras
 
 class QRCodeReaderViewModel: NSObject, ObservableObject {
     
+    @Published var qrBounds: CGRect? = nil
+    weak var previewLayer: AVCaptureVideoPreviewLayer?
+    
     private let captureSession: AVCaptureSession = AVCaptureSession()
     private var cancellables = Set<AnyCancellable>()
     
@@ -117,29 +120,47 @@ extension QRCodeReaderViewModel: AVCaptureMetadataOutputObjectsDelegate {
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         
-        guard !isProcessingScan else { return }   // 🚀 ignore duplicates
-               isProcessingScan = true
-        
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            
-            self.result.send(stringValue)
-            
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                           self?.captureSession.stopRunning()
-                       }
-            
-            // Restart capture session after a short delay to allow continuous scanning
-//            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1.0) { [weak self] in
-//                self?.captureSession.startRunning()
-//            }
-            
+//        guard !isProcessingScan else { return }   // 🚀 ignore duplicates
+//               isProcessingScan = true
+//        
+//        if let metadataObject = metadataObjects.first {
+//            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
+//            guard let stringValue = readableObject.stringValue else { return }
+//            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+//            
+//            self.result.send(stringValue)
+//            
 //            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-//                       self?.captureSession.stopRunning()
-//                   }
-        }
+//                           self?.captureSession.stopRunning()
+//                       }
+//        }
+        
+        // Get first QR object
+               guard let metadataObject = metadataObjects.first as? AVMetadataMachineReadableCodeObject else {
+                   DispatchQueue.main.async { self.qrBounds = nil } // clear rectangle if nothing found
+                   return
+               }
+               
+               // --- 🔴 Convert QR metadata to screen coordinates
+               if let previewLayer = previewLayer,
+                  let transformedObject = previewLayer.transformedMetadataObject(for: metadataObject) {
+                   DispatchQueue.main.async {
+                       self.qrBounds = transformedObject.bounds
+                   }
+               }
+               
+               // --- 🚀 Handle QR string only once
+               guard !isProcessingScan else { return }
+               isProcessingScan = true
+               
+               if let stringValue = metadataObject.stringValue {
+                   AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+                   self.result.send(stringValue)
+                   
+                   DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                       self?.captureSession.stopRunning()
+                   }
+               }
     }
 }
 

@@ -29,6 +29,28 @@ public struct QRCodeReader: View {
         ZStack(alignment: .bottomLeading) {
             self.viewModel.cameraPreview
                 .ignoresSafeArea()
+                .background(
+                        GeometryReader { _ in
+                            Color.clear.onAppear {
+                                if let preview = self.viewModel.cameraPreview.view as? CameraPreview.VideoPreviewView,
+                                   let layer = preview.layer as? AVCaptureVideoPreviewLayer {
+                                    self.viewModel.previewLayer = layer
+                                }
+                            }
+                        }
+                    )
+            
+            GeometryReader { geo in
+                if let bounds = viewModel.qrBounds {
+                    Rectangle()
+                        .stroke(Color.red, lineWidth: 2)
+                        .frame(width: bounds.width, height: bounds.height)
+                        .position(x: bounds.midX, y: bounds.midY)
+                        .animation(.easeInOut(duration: 0.2), value: bounds)
+                }
+            }
+            
+            //changes till now
             VStack {
                 Spacer()
                 HStack {

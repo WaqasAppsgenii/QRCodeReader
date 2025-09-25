@@ -40,14 +40,24 @@ public struct QRCodeReader: View {
                         }
                     )
             
-            GeometryReader { geo in
-                if let bounds = viewModel.qrBounds {
-                    Rectangle()
-                        .stroke(Color.red, lineWidth: 2)
-                        .frame(width: bounds.width, height: bounds.height)
-                        .position(x: bounds.midX, y: bounds.midY)
-                        .animation(.easeInOut(duration: 0.2), value: bounds)
-                }
+//            GeometryReader { geo in
+//                if let bounds = viewModel.qrBounds {
+//                    Rectangle()
+//                        .stroke(Color.red, lineWidth: 2)
+//                        .frame(width: bounds.width, height: bounds.height)
+//                        .position(x: bounds.midX, y: bounds.midY)
+//                        .animation(.easeInOut(duration: 0.2), value: bounds)
+//                }
+                .overlay(
+                           GeometryReader { geo in
+                               if let bounds = viewModel.qrBounds {
+                                   Rectangle()
+                                       .stroke(Color.red, lineWidth: 3)
+                                       .frame(width: bounds.width, height: bounds.height)
+                                       .position(x: bounds.midX, y: bounds.midY)
+                               }
+                           }
+                       )
             }
             
             //changes till now
@@ -98,6 +108,9 @@ public struct QRCodeReader: View {
         }
         .onDisappear {
             self.viewModel.stopCapturing()
+            
+            // Clear rectangle lines
+            self.viewModel.qrBounds = nil
         }
         .sheet(isPresented: $isImagePickerPresented) {
             ImagePicker(selectedImage: self.$selectedImage)

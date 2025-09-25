@@ -143,28 +143,13 @@ extension QRCodeReaderViewModel: AVCaptureMetadataOutputObjectsDelegate {
                }
                
                // --- 🔴 Convert QR metadata to screen coordinates
-//               if let previewLayer = previewLayer,
-//                  let transformedObject = previewLayer.transformedMetadataObject(for: metadataObject) {
-//                   DispatchQueue.main.async {
-//                       self.qrBounds = transformedObject.bounds
-//                   }
-//               }
+               if let previewLayer = previewLayer,
+                  let transformedObject = previewLayer.transformedMetadataObject(for: metadataObject) {
+                   DispatchQueue.main.async {
+                       self.qrBounds = transformedObject.bounds
+                   }
+               }
         
-        if let previewLayer = previewLayer,
-           let transformed = previewLayer.transformedMetadataObject(for: metadataObject) {
-            
-            let layerBounds = previewLayer.bounds
-            let normalized = CGRect(
-                x: transformed.bounds.origin.x / layerBounds.width,
-                y: transformed.bounds.origin.y / layerBounds.height,
-                width: transformed.bounds.width / layerBounds.width,
-                height: transformed.bounds.height / layerBounds.height
-            )
-            
-            DispatchQueue.main.async {
-                self.qrBounds = normalized   // store as percentages (0–1)
-            }
-        }
                
                // --- 🚀 Handle QR string only once
                guard !isProcessingScan else { return }

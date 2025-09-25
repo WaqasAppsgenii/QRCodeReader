@@ -35,6 +35,7 @@ public struct QRCodeReader: View {
                                 if let preview = self.viewModel.cameraPreview.view as? CameraPreview.VideoPreviewView,
                                    let layer = preview.layer as? AVCaptureVideoPreviewLayer {
                                     self.viewModel.previewLayer = layer
+                                    self.viewModel.previewLayerBounds = layer.bounds 
                                 }
                             }
                         }
@@ -50,16 +51,18 @@ public struct QRCodeReader: View {
 //                }
 //            }
             
-            .overlay(
-                       GeometryReader { geo in
-                           if let bounds = viewModel.qrBounds {
-                               Rectangle()
-                                   .stroke(Color.red, lineWidth: 3)
-                                   .frame(width: bounds.width, height: bounds.height)
-                                   .position(x: bounds.midX, y: bounds.midY)
-                           }
-                       }
-                   )
+                .overlay(
+                    GeometryReader { geo in
+                        if let bounds = viewModel.qrBounds {
+                            Rectangle()
+                                .stroke(Color.red, lineWidth: 3)
+                                .frame(width: bounds.width * geo.size.width,
+                                       height: bounds.height * geo.size.height)
+                                .position(x: bounds.midX * geo.size.width,
+                                          y: bounds.midY * geo.size.height)
+                        }
+                    }
+                )
             
             //changes till now
             VStack {

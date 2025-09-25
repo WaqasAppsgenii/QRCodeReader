@@ -57,9 +57,8 @@ public struct QRCodeReader: View {
                            let preview = viewModel.cameraPreview.view as? CameraPreview.VideoPreviewView,
                            let layer = preview.layer as? AVCaptureVideoPreviewLayer {
                             
-                            // Map layer coords → SwiftUI coords
-                            let converted = layer
-                                .layerRectConverted(fromMetadataOutputRect: bounds)
+                            // Convert layer rect to SwiftUI view coordinates
+                            let converted = layer.convert(bounds, to: layer.superlayer)
                             
                             Rectangle()
                                 .stroke(Color.red, lineWidth: 3)

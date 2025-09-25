@@ -53,17 +53,15 @@ public struct QRCodeReader: View {
             
                 .overlay(
                     GeometryReader { geo in
-                        if let bounds = viewModel.qrBounds,
-                           let preview = viewModel.cameraPreview.view as? CameraPreview.VideoPreviewView,
-                           let layer = preview.layer as? AVCaptureVideoPreviewLayer {
-                            
-                            // Convert layer rect to SwiftUI view coordinates
-                            let converted = layer.convert(bounds, to: layer.superlayer)
-                            
+                        if let bounds = viewModel.qrBounds {
+                            let safeTop = geo.safeAreaInsets.top   // usually ~47–60pts
                             Rectangle()
                                 .stroke(Color.red, lineWidth: 3)
-                                .frame(width: converted.width, height: converted.height)
-                                .position(x: converted.midX, y: converted.midY)
+                                .frame(width: bounds.width, height: bounds.height)
+                                .position(
+                                    x: bounds.midX,
+                                    y: bounds.midY - safeTop   // 🔑 shift up by inset
+                                )
                         }
                     }
                 )

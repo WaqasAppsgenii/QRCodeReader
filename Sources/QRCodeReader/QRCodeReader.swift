@@ -48,17 +48,18 @@ public struct QRCodeReader: View {
 //                        .position(x: bounds.midX, y: bounds.midY)
 //                        .animation(.easeInOut(duration: 0.2), value: bounds)
 //                }
-                .overlay(
-                           GeometryReader { geo in
-                               if let bounds = viewModel.qrBounds {
-                                   Rectangle()
-                                       .stroke(Color.red, lineWidth: 3)
-                                       .frame(width: bounds.width, height: bounds.height)
-                                       .position(x: bounds.midX, y: bounds.midY)
-                               }
+//            }
+            
+            .overlay(
+                       GeometryReader { geo in
+                           if let bounds = viewModel.qrBounds {
+                               Rectangle()
+                                   .stroke(Color.red, lineWidth: 3)
+                                   .frame(width: bounds.width, height: bounds.height)
+                                   .position(x: bounds.midX, y: bounds.midY)
                            }
-                       )
-            }
+                       }
+                   )
             
             //changes till now
             VStack {

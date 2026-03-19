@@ -54,6 +54,21 @@ class QRCodeReaderViewModel: NSObject, ObservableObject {
             .store(in: &self.cancellables)
     }
     
+    func setScanRect(_ rect: CGRect, viewSize: CGSize) {
+        guard
+            let output = captureSession.outputs.compactMap({ $0 as? AVCaptureMetadataOutput }).first,
+            let previewLayer = previewLayer
+        else { return }
+        
+        DispatchQueue.main.async {
+            // Convert using previewLayer's coordinate system
+            let convertedRect = previewLayer.metadataOutputRectConverted(
+                fromLayerRect: rect
+            )
+            output.rectOfInterest = convertedRect
+        }
+    }
+    
     func startCapturing() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self else { return }

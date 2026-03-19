@@ -28,7 +28,7 @@ public struct QRCodeReader: View {
     public var body: some View {
         ZStack(alignment: .bottomLeading) {
             self.viewModel.cameraPreview
-                .ignoresSafeArea()
+                .ignoresSafeArea(.all, edges: .all)
                 .background(
                         GeometryReader { _ in
                             Color.clear.onAppear {
@@ -51,8 +51,55 @@ public struct QRCodeReader: View {
 //                }
 //            }
             
+//                .overlay(
+//                    GeometryReader { geo in
+//                        if let bounds = viewModel.qrBounds {
+//                            let safeTop = geo.safeAreaInsets.top   // usually ~47–60pts
+//                            Rectangle()
+//                                .stroke(Color.red, lineWidth: 3)
+//                                .frame(width: bounds.width, height: bounds.height)
+//                                .position(
+//                                    x: bounds.midX,
+//                                    y: bounds.midY - safeTop   // 🔑 shift up by inset
+//                                )
+//                        }
+//                    }
+//                )
+            
                 .overlay(
                     GeometryReader { geo in
+                        let size: CGFloat = 260
+                        
+                        let scanRect = CGRect(
+                            x: (geo.size.width - size) / 2,
+                            y: (geo.size.height - size) / 2,
+                            width: size,
+                            height: size
+                        )
+                        
+                        ZStack {
+                            // Dimmed background with cutout
+                            Path { path in
+                                path.addRect(CGRect(origin: .zero, size: geo.size))
+                                path.addRect(scanRect)
+                            }
+                            .fill(Color.black.opacity(0.6), style: FillStyle(eoFill: true))
+                            
+                            // Border
+                            Rectangle()
+                                .stroke(Color.white, lineWidth: 2)
+                                .frame(width: scanRect.width, height: scanRect.height)
+                                .position(x: scanRect.midX, y: scanRect.midY)
+                        }
+                        .onAppear {
+                            viewModel.setScanRect(scanRect, viewSize: geo.size)
+                        }
+                        .onChange(of: viewModel.previewLayerBounds) { _ in
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                viewModel.setScanRect(scanRect, viewSize: geo.size)
+                            }
+                        }
+                        
                         if let bounds = viewModel.qrBounds {
                             let safeTop = geo.safeAreaInsets.top   // usually ~47–60pts
                             Rectangle()
@@ -65,6 +112,7 @@ public struct QRCodeReader: View {
                         }
                     }
                 )
+                .ignoresSafeArea(.all, edges: .all)
             
             //changes till now
             VStack {
@@ -94,6 +142,10 @@ public struct QRCodeReader: View {
                     }
                 }
                 .padding(.bottom)
+                
+                Text("Please scan a valid QR code to initiate payment")
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
             }
             
         }
